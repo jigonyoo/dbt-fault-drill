@@ -1,0 +1,27 @@
+name: shop
+version: "1.0.0"
+profile: shop
+config-version: 2
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+
+seeds:
+  shop:
+    orders:
+      +column_types:
+        order_id: integer
+        customer_id: integer
+        ordered_at: date
+        status: varchar
+        currency: varchar
+        amount: decimal(12,2)
+    customers:
+      +column_types:
+        customer_id: integer
+        country: varchar
+
+models:
+  shop:
+    +materialized: table

@@ -1,0 +1,17 @@
+# Which seed to plant faults into, and which column plays which role.
+seed: orders
+roles:
+  key: order_id
+  amount: amount
+  currency: currency
+  date: ordered_at
+  category: status
+  foreign_key: customer_id
+foreign_key_seed: customers
+foreign_key_ref_column: customer_id
+faults: all
+rng_seed: 7
+# Optional: show how far each fault moved a number someone reads.
+impact:
+  model: fct_daily_revenue
+  column: revenue
