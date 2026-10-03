@@ -1,0 +1,255 @@
+{
+  "summary": {
+    "planted": 17,
+    "stopped": 14,
+    "stopped_by_test": 13,
+    "stopped_by_load_error": 1,
+    "silent": 3,
+    "silent_faults": [
+      "replayed_row_new_key",
+      "amount_off_by_10x",
+      "stale_batch"
+    ],
+    "not_applicable": [],
+    "tool_errors": [],
+    "skipped": {}
+  },
+  "run": {
+    "project": "/home/claude/dbt-fault-drill/examples/shop",
+    "seed": "orders",
+    "select": null,
+    "exclude": null,
+    "rng_seed": 7,
+    "dbt": "dbt-core 1.12.5, dbt-duckdb 1.11.0",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v64-x86_64-with-glibc2.39"
+  },
+  "baseline": {
+    "fault": "baseline",
+    "outcome": "missed",
+    "planted": "no fault",
+    "failing_tests": [],
+    "warning_tests": [],
+    "errored_nodes": [],
+    "seconds": 5.2,
+    "detail": "15:02:34  9 of 18 PASS not_in_future_stg_orders_ordered_at ............................... [PASS in 0.02s]\n15:02:34  10 of 18 START test not_null_stg_orders_amount ................................. [RUN]\n15:02:34  10 of 18 PASS not_null_stg_orders_amount ....................................... [PASS in 0.02s]\n15:02:34  11 of 18 START test not_null_stg_orders_customer_id ............................ [RUN]\n15:02:34  11 of 18 PASS not_null_stg_orders_customer_id .................................. [PASS in 0.02s]\n15:02:34  12 of 18 START test not_null_stg_orders_order_id ............................... [RUN]\n15:02:34  12 of 18 PASS not_null_stg_orders_order_id ..................................... [PASS in 0.02s]\n15:02:34  13 of 18 START test not_null_stg_orders_ordered_at ............................. [RUN]\n15:02:34  13 of 18 PASS not_null_stg_orders_ordered_at ................................... [PASS in 0.02s]\n15:02:34  14 of 18 START test relationships_stg_orders_customer_id__customer_id__ref_stg_customers_  [RUN]\n15:02:34  14 of 18 PASS relationships_stg_orders_customer_id__customer_id__ref_stg_customers_  [PASS in 0.03s]\n15:02:34  15 of 18 START test row_count_at_least_stg_orders_100 .......................... [RUN]\n15:02:34  15 of 18 PASS row_count_at_least_stg_orders_100 ................................ [PASS in 0.02s]\n15:02:34  16 of 18 START test unique_stg_orders_order_id ................................. [RUN]\n15:02:34  16 of 18 PASS unique_stg_orders_order_id ....................................... [PASS in 0.02s]\n15:02:34  17 of 18 START test value_between_stg_orders_amount__5000__0 ................... [RUN]\n15:02:34  17 of 18 PASS value_between_stg_orders_amount__5000__0 ......................... [PASS in 0.02s]\n15:02:34  18 of 18 START sql table model main.fct_daily_revenue .......................... [RUN]\n15:02:34  18 of 18 OK created sql table model main.fct_daily_revenue ..................... [OK in 0.03s]\n15:02:34  \n15:02:34  Finished running 2 seeds, 3 table models, 13 data tests in 0 hours 0 minutes and 0.68 seconds (0.68s).\n15:02:34  \n15:02:34  Completed successfully\n15:02:34  \n15:02:34  Done. PASS=18 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=18",
+    "impact": 20174.75
+  },
+  "results": [
+    {
+      "fault": "duplicate_key",
+      "outcome": "caught",
+      "planted": "row with order_id=50036 appended a second time",
+      "failing_tests": [
+        "unique_stg_orders_order_id"
+      ],
+      "warning_tests": [],
+      "errored_nodes": [],
+      "seconds": 11.9,
+      "detail": "",
+      "impact": null
+    },
+    {
+      "fault": "null_key",
+      "outcome": "caught",
+      "planted": "order_id blanked on one row (was 50041)",
+      "failing_tests": [
+        "not_null_stg_orders_order_id"
+      ],
+      "warning_tests": [],
+      "errored_nodes": [],
+      "seconds": 11.3,
+      "detail": "",
+      "impact": null
+    },
+    {
+      "fault": "null_amount",
+      "outcome": "caught",
+      "planted": "amount blanked on one row (was 107.74)",
+      "failing_tests": [
+        "not_null_stg_orders_amount"
+      ],
+      "warning_tests": [],
+      "errored_nodes": [],
+      "seconds": 11.8,
+      "detail": "",
+      "impact": null
+    },
+    {
+      "fault": "amount_in_cents",
+      "outcome": "caught",
+      "planted": "amount 108.99 -> 10899 on one row (x100, cents as dollars)",
+      "failing_tests": [
+        "value_between_stg_orders_amount__5000__0"
+      ],
+      "warning_tests": [],
+      "errored_nodes": [],
+      "seconds": 11.3,
+      "detail": "",
+      "impact": null
+    },
+    {
+      "fault": "absurd_amount",
+      "outcome": "caught",
+      "planted": "amount 44.83 -> 45000000 on one row",
+      "failing_tests": [
+        "value_between_stg_orders_amount__5000__0"
+      ],
+      "warning_tests": [],
+      "errored_nodes": [],
+      "seconds": 11.1,
+      "detail": "",
+      "impact": null
+    },
+    {
+      "fault": "negative_amount",
+      "outcome": "caught",
+      "planted": "amount 107.74 -> -107.74 on one row",
+      "failing_tests": [
+        "value_between_stg_orders_amount__5000__0"
+      ],
+      "warning_tests": [],
+      "errored_nodes": [],
+      "seconds": 11.3,
+      "detail": "",
+      "impact": null
+    },
+    {
+      "fault": "foreign_amount_labeled_home",
+      "outcome": "caught",
+      "planted": "amount 15.67 -> 21154 on one row, KRW scale (currency still USD)",
+      "failing_tests": [
+        "value_between_stg_orders_amount__5000__0"
+      ],
+      "warning_tests": [],
+      "errored_nodes": [],
+      "seconds": 10.9,
+      "detail": "",
+      "impact": null
+    },
+    {
+      "fault": "unknown_currency",
+      "outcome": "caught",
+      "planted": "currency 'EUR' -> 'eur' on one row",
+      "failing_tests": [
+        "accepted_values_stg_orders_currency__USD__EUR"
+      ],
+      "warning_tests": [],
+      "errored_nodes": [],
+      "seconds": 10.8,
+      "detail": "",
+      "impact": null
+    },
+    {
+      "fault": "unknown_category",
+      "outcome": "caught",
+      "planted": "status 'delivered' -> 'DELIVERED' on one row",
+      "failing_tests": [
+        "accepted_values_stg_orders_status__placed__shipped__delivered__returned__cancelled"
+      ],
+      "warning_tests": [],
+      "errored_nodes": [],
+      "seconds": 11.4,
+      "detail": "",
+      "impact": null
+    },
+    {
+      "fault": "future_date",
+      "outcome": "caught",
+      "planted": "ordered_at 2026-08-25 -> 2099-01-01 on one row",
+      "failing_tests": [
+        "not_in_future_stg_orders_ordered_at"
+      ],
+      "warning_tests": [],
+      "errored_nodes": [],
+      "seconds": 11.1,
+      "detail": "",
+      "impact": null
+    },
+    {
+      "fault": "date_format_drift",
+      "outcome": "load_error",
+      "planted": "ordered_at 2026-09-18 -> 18/09/2026 on one row",
+      "failing_tests": [],
+      "warning_tests": [],
+      "errored_nodes": [
+        "orders"
+      ],
+      "seconds": 10.6,
+      "detail": "",
+      "impact": null
+    },
+    {
+      "fault": "orphan_foreign_key",
+      "outcome": "caught",
+      "planted": "customer_id 126 -> 999999 on one row (no such parent)",
+      "failing_tests": [
+        "relationships_stg_orders_customer_id__customer_id__ref_stg_customers_"
+      ],
+      "warning_tests": [],
+      "errored_nodes": [],
+      "seconds": 11.0,
+      "detail": "",
+      "impact": 20174.75
+    },
+    {
+      "fault": "replayed_row_new_key",
+      "outcome": "missed",
+      "planted": "row order_id=50030 re-ingested as order_id=50240 (same content, new key)",
+      "failing_tests": [],
+      "warning_tests": [],
+      "errored_nodes": [],
+      "seconds": 11.3,
+      "detail": "",
+      "impact": 20393.34
+    },
+    {
+      "fault": "amount_off_by_10x",
+      "outcome": "missed",
+      "planted": "amount 30.95 -> 309.50 on one row (x10)",
+      "failing_tests": [],
+      "warning_tests": [],
+      "errored_nodes": [],
+      "seconds": 11.4,
+      "detail": "",
+      "impact": 20453.3
+    },
+    {
+      "fault": "stale_batch",
+      "outcome": "missed",
+      "planted": "all 240 ordered_at values shifted back 365 days (old file reloaded)",
+      "failing_tests": [],
+      "warning_tests": [],
+      "errored_nodes": [],
+      "seconds": 11.1,
+      "detail": "",
+      "impact": 20174.75
+    },
+    {
+      "fault": "empty_batch",
+      "outcome": "caught",
+      "planted": "all 240 rows removed (header only)",
+      "failing_tests": [
+        "row_count_at_least_stg_orders_100"
+      ],
+      "warning_tests": [],
+      "errored_nodes": [],
+      "seconds": 11.1,
+      "detail": "",
+      "impact": null
+    },
+    {
+      "fault": "truncated_batch",
+      "outcome": "caught",
+      "planted": "240 rows -> 24 rows (90% missing)",
+      "failing_tests": [
+        "row_count_at_least_stg_orders_100"
+      ],
+      "warning_tests": [],
+      "errored_nodes": [],
+      "seconds": 5.7,
+      "detail": "",
+      "impact": null
+    }
+  ]
+}
