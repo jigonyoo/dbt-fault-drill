@@ -1,0 +1,19 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.10", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: pip install -e ".[dev]"
+      - run: pytest -q
+      - name: drill the example (basic suite must stay at 3 of 17)
+        run: |
+          dbt-fault-drill run --project-dir examples/shop --exclude tag:contract --json basic.json --out basic.md
+          python -c "import json; s=json.load(open('basic.json'))['summary']; assert (s['stopped'], s['planted']) == (3, 17), s"
