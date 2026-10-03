@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dbt-fault-drill"
+version = "0.1.0"
+description = "Plant realistic faults in a dbt seed and measure how many your tests stop."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Jigon Yoo" }]
+requires-python = ">=3.10"
+dependencies = ["pyyaml>=6"]
+keywords = ["dbt", "data-quality", "testing", "fault-injection", "duckdb"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Topic :: Database",
+  "Topic :: Software Development :: Testing",
+]
+
+[project.optional-dependencies]
+duckdb = ["dbt-core>=1.10", "dbt-duckdb>=1.10"]
+dev = ["pytest>=7", "dbt-core>=1.10", "dbt-duckdb>=1.10"]
+
+[project.scripts]
+dbt-fault-drill = "dbt_fault_drill.cli:main"
+
+[project.urls]
+Homepage = "https://jigonyoo.com"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

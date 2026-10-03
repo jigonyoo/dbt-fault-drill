@@ -1,0 +1,11 @@
+__pycache__/
+*.egg-info/
+.pytest_cache/
+build/
+dist/
+target/
+logs/
+*.duckdb
+*.duckdb.wal
+.venv/
+examples/**/_drill_profiles/
