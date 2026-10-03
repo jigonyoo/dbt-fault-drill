@@ -1,0 +1,62 @@
+version: 2
+
+# Two suites live in this file.
+#   basic    = what most projects start with: unique + not_null on keys (untagged)
+#   contract = the data contract, tagged `contract`
+# `dbt-fault-drill run --exclude tag:contract` measures the basic suite alone.
+
+models:
+  - name: stg_customers
+    columns:
+      - name: customer_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: stg_orders
+    data_tests:
+      - row_count_at_least:
+          arguments:
+            min_rows: 100
+          config: {tags: [contract]}
+    columns:
+      - name: order_id
+        data_tests:
+          - unique
+          - not_null
+      - name: customer_id
+        data_tests:
+          - not_null:
+              config: {tags: [contract]}
+          - relationships:
+              arguments:
+                to: ref('stg_customers')
+                field: customer_id
+              config: {tags: [contract]}
+      - name: ordered_at
+        data_tests:
+          - not_null:
+              config: {tags: [contract]}
+          - not_in_future:
+              config: {tags: [contract]}
+      - name: status
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [placed, shipped, delivered, returned, cancelled]
+              config: {tags: [contract]}
+      - name: currency
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [USD, EUR]
+              config: {tags: [contract]}
+      - name: amount
+        data_tests:
+          - not_null:
+              config: {tags: [contract]}
+          - value_between:
+              arguments:
+                min_value: 0
+                max_value: 5000
+              config: {tags: [contract]}
